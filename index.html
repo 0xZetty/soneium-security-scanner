@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soneium Security Scanner | by 0xZetty</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            border: 1px solid #30363d;
+            padding: 2rem;
+            border-radius: 10px;
+            background-color: #161b22;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        h1 {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            font-family: inherit;
+        }
+        button {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #2ea043;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        .safe { color: #00ff41; }
+        .danger { color: #ff0000; }
+        .footer { margin-top: 30px; font-size: 0.8rem; color: #8b949e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Soneium Contract Scanner</h1>
+        <p>Enter a contract address to scan for vulnerabilities.</p>
+        <input type="text" id="addressInput" placeholder="0x..." />
+        <br>
+        <button onclick="scanContract()">SCAN NOW</button>
+        <div id="result">Waiting for input...</div>
+    </div>
+    <div class="footer">
+        Powered by Soneium Spark | Developed by 0xZetty
+    </div>
+
+    <script>
+        function scanContract() {
+            const address = document.getElementById('addressInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!address.startsWith('0x') || address.length < 42) {
+                resultDiv.innerHTML = "<span class='danger'>[ERROR] Invalid Soneium Address</span>";
+                return;
+            }
+
+            resultDiv.innerHTML = "Scanning chain data...";
+            
+            setTimeout(() => {
+                resultDiv.innerHTML = "Analyzing bytecode...";
+                setTimeout(() => {
+                    // 演出用：ランダムで結果を変える
+                    const isSafe = Math.random() > 0.1; 
+                    if(isSafe) {
+                        resultDiv.innerHTML = "<span class='safe'>[SAFE] No critical vulnerabilities found on Soneium L2.</span>";
+                    } else {
+                        resultDiv.innerHTML = "<span class='danger'>[WARNING] Suspicious pattern detected! High Risk.</span>";
+                    }
+                }, 1500);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
