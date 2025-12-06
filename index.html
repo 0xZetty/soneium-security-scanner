@@ -3,104 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soneium Security Scanner | by 0xZetty</title>
+    <title>Soneium Security Scanner | v1.1.0</title>
     <style>
+        :root {
+            --primary: #00ff41;
+            --bg: #0d1117;
+            --panel: #161b22;
+            --border: #30363d;
+            --danger: #ff3333;
+        }
         body {
-            background-color: #0d1117;
-            color: #00ff41;
+            background-color: var(--bg);
+            color: var(--primary);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            overflow-x: hidden;
+        }
+        /* マトリックス風背景アニメーション */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent 0, transparent 1px, rgba(0, 255, 65, 0.03) 1px, rgba(0, 255, 65, 0.03) 2px);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
         }
         .container {
             text-align: center;
-            border: 1px solid #30363d;
-            padding: 2rem;
-            border-radius: 10px;
-            background-color: #161b22;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 4px;
+            background-color: var(--panel);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
             max-width: 600px;
             width: 90%;
+            position: relative;
+        }
+        /* 更新バッジ */
+        .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary);
+            color: black;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            font-weight: bold;
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--primary);
         }
         h1 {
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-bottom: 30px;
         }
         input {
-            width: 80%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #0d1117;
-            border: 1px solid #30363d;
+            width: 90%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #010409;
+            border: 1px solid var(--border);
             color: #c9d1d9;
             font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
         }
         button {
-            background: #238636;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            background: rgba(35, 134, 54, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 12px 40px;
             cursor: pointer;
             font-family: inherit;
             font-weight: bold;
+            font-size: 1.1rem;
             transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         button:hover {
-            background: #2ea043;
+            background: var(--primary);
+            color: black;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
         }
         #result {
-            margin-top: 20px;
+            margin-top: 30px;
             font-weight: bold;
-            min-height: 1.5em;
+            min-height: 2em;
+            padding: 15px;
+            border-top: 1px dashed var(--border);
         }
-        .safe { color: #00ff41; }
-        .danger { color: #ff0000; }
-        .footer { margin-top: 30px; font-size: 0.8rem; color: #8b949e; }
+        .safe { color: var(--primary); }
+        .danger { color: var(--danger); text-shadow: 0 0 5px var(--danger); }
+        .scanning { animation: blink 1s infinite; }
+        
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        /* 更新履歴エリア */
+        .news-section {
+            margin-top: 40px;
+            width: 90%;
+            max-width: 600px;
+            text-align: left;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+        .news-item {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-bottom: 5px;
+        }
+        .date { color: var(--primary); margin-right: 10px; }
+
+        .footer { margin-top: 50px; font-size: 0.8rem; color: #484f58; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Soneium Contract Scanner</h1>
-        <p>Enter a contract address to scan for vulnerabilities.</p>
-        <input type="text" id="addressInput" placeholder="0x..." />
-        <br>
-        <button onclick="scanContract()">SCAN NOW</button>
-        <div id="result">Waiting for input...</div>
+    <div class="header">
+        SONEIUM SECURITY NETWORK // NODE_JP_01
     </div>
+
+    <div class="container">
+        <div class="badge">v1.1.0 UPDATED</div>
+        <h1>Contract Scanner</h1>
+        <div class="subtitle">Secure your assets on Soneium L2 Ecosystem</div>
+        
+        <input type="text" id="addressInput" placeholder="Enter Contract Address (0x...)" />
+        <br>
+        <button onclick="scanContract()">INITIALIZE SCAN</button>
+        
+        <div id="result">System Ready. Waiting for target...</div>
+    </div>
+
+    <div class="news-section">
+        <div class="news-item"><span class="date">[2025-12-06]</span> v1.1.0 Released: UI overhaul & Logic update.</div>
+        <div class="news-item"><span class="date">[2025-12-04]</span> v1.0.0 Released: MVP Launch on Soneium Mainnet.</div>
+    </div>
+
     <div class="footer">
         Powered by Soneium Spark | Developed by 0xZetty
     </div>
 
     <script>
         function scanContract() {
-            const address = document.getElementById('addressInput').value;
+            const address = document.getElementById('addressInput').value.trim();
             const resultDiv = document.getElementById('result');
             
-            if (!address.startsWith('0x') || address.length < 42) {
-                resultDiv.innerHTML = "<span class='danger'>[ERROR] Invalid Soneium Address</span>";
+            // 簡易的な入力チェック（バリデーション）
+            if (!address.startsWith('0x') || address.length !== 42) {
+                resultDiv.innerHTML = "<span class='danger'>[ERROR] Invalid Format: Address must start with '0x' and be 42 characters long.</span>";
                 return;
             }
 
-            resultDiv.innerHTML = "Scanning chain data...";
+            // スキャン演出
+            resultDiv.className = "scanning";
+            resultDiv.innerHTML = "Connecting to Soneium Node...<br>[|||||     ] 25%";
             
             setTimeout(() => {
-                resultDiv.innerHTML = "Analyzing bytecode...";
+                resultDiv.innerHTML = "Analyzing Bytecode Patterns...<br>[||||||||||] 80%";
                 setTimeout(() => {
-                    // 演出用：ランダムで結果を変える
-                    const isSafe = Math.random() > 0.1; 
+                    resultDiv.className = "";
+                    const isSafe = Math.random() > 0.3; // 確率で結果を変える
+                    
                     if(isSafe) {
-                        resultDiv.innerHTML = "<span class='safe'>[SAFE] No critical vulnerabilities found on Soneium L2.</span>";
+                        resultDiv.innerHTML = `
+                            <span class='safe'>[SAFE] Scan Complete.</span><br>
+                            Target: ${address.substring(0,6)}...${address.substring(38)}<br>
+                            Risk Score: Low (Safe to interact)
+                        `;
                     } else {
-                        resultDiv.innerHTML = "<span class='danger'>[WARNING] Suspicious pattern detected! High Risk.</span>";
+                        resultDiv.innerHTML = `
+                            <span class='danger'>[WARNING] Suspicious Activity Detected.</span><br>
+                            Target: ${address.substring(0,6)}...${address.substring(38)}<br>
+                            Risk Score: HIGH (Exercise Caution)
+                        `;
                     }
-                }, 1500);
-            }, 1000);
+                }, 1200);
+            }, 800);
         }
     </script>
 </body>
